@@ -128,11 +128,17 @@ randomized parameters, you can use the `flatland-augment` command:
 
 ```bash
 flatland-augment --help
-flatlang-augment ./library/stickman.fbp -o ./outputs --num-samples 5
+flatlang-augment -f ./library/stickman.fbp -o ./outputs --num-samples 5
 ```
 
 `flatland-augment`  generates and run `.fbp` programs to create a
 large number of (`png`/`json`/`lisp`) in the given folder.
+
+It can also be used to stich various `.fbp` programs randomly to generate a new `.fbp` program. For programs stored in a folder `./files`. Example:
+
+```bash
+flatland-augment -m ./files --fname l2_augment -o ./outputs --num-samples 1
+```
 
 ## Compare individual programs
 
@@ -172,8 +178,8 @@ option.
 
 ```bash
 flatland-draw myfile.fbp --library /location/of/my/fbp/programs/
-flatland-scoring myfile1.fbp myfile2.fbp --library /location/of/my/fbp/programs/
-flatland-augment myfile.fbp --library /location/of/my/fbp/programs/
+flatland-scoring -f myfile1.fbp myfile2.fbp --library /location/of/my/fbp/programs/
+flatland-augment -f myfile.fbp --library /location/of/my/fbp/programs/
 flatland-ddist --train-set ./train_set --test-set ./test_set --library /location/of/my/fbp/programs/
 ```
 
