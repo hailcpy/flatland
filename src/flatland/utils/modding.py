@@ -157,5 +157,6 @@ def finalize(fname):
     )
     out = BytesIO(ps.encode("utf-8"))
     img = Image.open(out).convert("RGBA").resize((256, 256))
+    print(rawname)
     img.save(f"{rawname}.png", lossless=True)
     turtle.clear()

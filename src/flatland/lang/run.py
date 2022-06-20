@@ -57,7 +57,7 @@ def exec_flow(expr, filename: str, env=None):
     return flowdata
 
 
-def main(program: str, filename: str, env=None, localname=None):
+def run_single(program: str, filename: str, env=None, localname=None):
     initialize()  # technically, init only after parsing
     filename = os.path.abspath(filename)
     if localname is None:
@@ -70,4 +70,31 @@ def main(program: str, filename: str, env=None, localname=None):
         cur_dir = os.getcwd()
         localname = os.path.join(cur_dir, basename)
         finalize(localname)
+    return expr, flowdata
+
+
+def run_mul(programs: list, filename: str, env=None, localname=None):
+    initialize()
+    filename = os.path.abspath(filename)
+    if localname is None:
+        localname = filename
+    with CurrentDir(filename):
+        expr = parse_fbp(programs)
+        flowdata = exec_flow(expr, localname, env)
+    if CONFIG.RUN:  # drawing happened
+        basename = os.path.basename(filename)
+        cur_dir = os.getcwd()
+        localname = os.path.join(cur_dir, basename)
+        finalize(localname)
+    return expr, flowdata
+
+
+def main(program, filename: str, env=None, localname=None):
+    initialize()  # technically, init only after parsing
+    if isinstance(program, str):
+        expr, flowdata = run_single(program, filename, env, localname)
+    elif isinstance(program, list):
+        expr, flowdata = run_mul(program, filename, env, localname)
+    else:
+        raise TypeError("program should be either str or list")
     return expr, flowdata
