@@ -2,6 +2,7 @@
 # provided as string input
 import json
 import os
+import random
 
 import flatland.utils.config as CONFIG
 from flatland.lang.run import run_mul as runner
@@ -10,7 +11,7 @@ from flatland.utils.modding import initialize
 from flatland.utils.randomizer import GENERATE_FILEID
 
 
-def main(programs: list, filename: str, num_samples: int, outdir: str):
+def main(programs: list, filename: str, num_samples: int, outdir: str, num_sub: int):
     outdir = os.path.abspath(outdir)
     CONFIG.RANDOMIZE = True
     CONFIG.RUN = True
@@ -22,7 +23,7 @@ def main(programs: list, filename: str, num_samples: int, outdir: str):
     for i in range(num_samples):
         newname = f"{basename}-{GENERATE_FILEID()}"
         CONFIG.SKIPIMAGE = True
-        expr, info = runner(programs, filename, env=None)
+        expr, info = runner(random.sample(programs, num_sub), filename, env=None)
 
         newpath = os.path.join(outdir, newname)
         with open(newpath + ".lisp", "w") as f2:

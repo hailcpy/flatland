@@ -17,10 +17,17 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "file",
+        "-f",
+        "--file",
         type=argparse.FileType("r", encoding="UTF-8"),
         default=None,
         help="input file",
+    )
+    parser.add_argument(
+        "--fname",
+        default=None,
+        type=str,
+        help="output file name for l2 augmentation"
     )
     parser.add_argument(
         "-m",
@@ -28,6 +35,13 @@ def main():
         default=None,
         type=check_dir,
         help="files path for l2 augmentation",
+    )
+    parser.add_argument(
+        "-s",
+        "--num-sub",
+        default=0,
+        type=int,
+        help="number of subgraphs to use in data, default is variable"
     )
     parser.add_argument(
         "-n",
@@ -65,14 +79,16 @@ def main():
     set_internal_dir(d.library)
     if d.mpath:
         programs = []
+        if d.num_sub == 0:
+            d.num_sub = len(os.listdir(d.mpath))
+        if d.fname is None:
+            d.fname = "l2_augment"
         for filepath in os.listdir(d.mpath):
             with open(os.path.join(d.mpath, filepath), 'r') as f:
                 program = f.read()
             programs.append(program)
-        if not d.file.name:
-            d.file.name = 'l2_augment'
-        multi_file(programs, d.file.name, d.num_samples, d.output_dir)
-    elif d.file:
+        multi_file(programs, d.fname, d.num_samples, d.output_dir, d.num_sub)
+    elif os.path.isfile(d.file):
         program = d.file.read()
         d.file.close()
         single_file(program, d.file.name, d.num_samples, d.output_dir)
